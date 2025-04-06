@@ -1,0 +1,781 @@
+{
+	"info": {
+		"_postman_id": "d9f6a6ae-2495-4faa-9565-9b8707076f7e",
+		"name": "Invoices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38115832"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.environment.set(\"email_gv\" , email)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// status code validation\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"//success message validation\r",
+									"var responseData = pm.response.text();\r",
+									"pm.test(\"Success message validation\", function() {\r",
+									"    pm.expect(responseData).to.eql(\"User registered successfully.\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{email_gv}}\",\r\n  \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Auth/register",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsondata = pm.response.json();\r",
+									"pm.globals.set(\"token_gv\", jsondata.token);\r",
+									"// status code validation\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{email_gv}}\",\r\n  \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Auth/login",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create a new contact to start testing",
+			"item": [
+				{
+					"name": "Create a new contact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var username= \"Ahmed\" + random;\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.collectionVariables.set(\"emailpost_cv\" , email);\r",
+									"pm.collectionVariables.set(\"usernamepost_cv\" , username)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData= pm.response.json();\r",
+									"pm.collectionVariables.set(\"contactId_cv\", responseData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  \r\n{\r\n   \"id\": \"3fc89f23-5997-4362-b3fe-2b812f55afa8\",\r\n  \"firstName\": \"Ahmed\",\r\n  \"lastName\": \"hussein\",\r\n  \"email\": \"{{emailpost_cv}}\",\r\n  \"phone\": \"2223223228333\",\r\n  \"balance\": 2000,\r\n  \"username\": \"{{usernamepost_cv}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 1",
+			"item": [
+				{
+					"name": "view all invoices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Invoices",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Invoices"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 3",
+			"item": [
+				{
+					"name": "Create a new invoice for a specific contact ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"var responseData = pm.response.json();\r",
+									"pm.test(\"validating data values of the response and their prescence\", function() {\r",
+									"    pm.expect(responseData.id).to.eql(pm.collectionVariables.get(\"contactId_cv\"));\r",
+									"    pm.expect(responseData.contactId).to.eql(pm.collectionVariables.get(\"contactId_cv\"));\r",
+									"    pm.expect(responseData.createdBy).to.eql(\"Khaled1\");\r",
+									"    pm.expect(responseData.cost).to.eql(20);\r",
+									"    pm.expect(responseData.discountPercentage).to.eql(0);\r",
+									"    pm.expect(responseData.taxAmount).to.eql(0);\r",
+									"    pm.expect(responseData.totalAmount).to.eql(20);\r",
+									"    pm.expect(responseData.status).to.eql(1);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"validating username\", function() {\r",
+									"    pm.expect(responseData.username).to.eql(\"Khaled\")\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Validate the value of total profit\", function () {\r",
+									"     pm.expect(responseData.totalProfit).to.eql(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJ1c2VybmFtZSI6InN0cmluZyIsImp0aSI6ImVkNmIwMDBiLTBlYjgtNDEzZS05ODM3LTU4YmRkMWFmMGM4NyIsImV4cCI6MTczNzg5NTI2NywiaXNzIjoiSW5NZW1vcnlBdXRoQVBJIiwiYXVkIjoiSW5NZW1vcnlBdXRoQVBJVXNlcnMifQ.asMRN1wkc_QD-XlHQDGdIg7Ho369XdckQRZ-vuDhqUQ"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{contactId_cv}}\",\n  \"contactId\": \"{{contactId_cv}}\",\n  \"createdBy\": \"Khaled1\",\n  \"cost\": 20,\n  \"discountPercentage\": 0,\n  \"taxAmount\": 0,\n  \"totalAmount\": 0,\n  \"totalProfit\": 0,\n  \"status\": 1,\n  \"createdDate\": \"2025-01-27T14:50:09.446Z\",\n  \"username\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Invoices",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Invoices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirming balance update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Validate contact ID in the body\", function () {\r",
+									"     pm.expect(responseData.id).to.eql(pm.collectionVariables.get(\"contactid_cv\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactId_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactId_cv}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an existing contact(to help with testing when needed)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var username= \"Ahmed\" + random;\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.collectionVariables.set(\"emailput_cv\" , email);\r",
+									"pm.collectionVariables.set(\"usernameput_cv\" , username)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  \r\n{\r\n   \"id\": \"{{contactId_cv}}\",\r\n  \"firstName\": \"Ahmed\",\r\n  \"lastName\": \"Mohamed\",\r\n  \"email\": \"{{emailput_cv}}\",\r\n  \"phone\": \"2223223555553\",\r\n  \"balance\": 1000,\r\n  \"username\": \"{{usernameput_cv}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactId_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactId_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 2",
+			"item": [
+				{
+					"name": "Retrieves a specific invoice by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Invoices/{{contactId_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Invoices",
+								"{{contactId_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 4",
+			"item": [
+				{
+					"name": "Return an invoice by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"validating success message\", function() {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Invoice returned successfully.\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Invoices/{{contactId_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Invoices",
+								"{{contactId_cv}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirming balance update Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Validate contact ID in the body\", function () {\r",
+									"     pm.expect(responseData.id).to.eql(pm.collectionVariables.get(\"contactid_cv\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactId_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactId_cv}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay an invoice amount",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"invoiceId\": \"{{contactId_cv}}\",\r\n  \"amount\": 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Invoices/pay",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Invoices",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 5",
+			"item": [
+				{
+					"name": "Pay an invoice amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"validate success message\", function() {\r",
+									"    var responseData = pm.response.text();\r",
+									"    pm.expect(responseData).to.include(\"Invoice paid successfully.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"invoiceId\": \"{{contactId_cv}}\",\r\n  \"amount\": 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Invoices/pay",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Invoices",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirming balance update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Validate contact ID in the body\", function () {\r",
+									"     pm.expect(responseData.id).to.eql(pm.collectionVariables.get(\"contactid_cv\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactId_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactId_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token_gv}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "contactId_cv",
+			"value": ""
+		},
+		{
+			"key": "emailput_cv",
+			"value": ""
+		},
+		{
+			"key": "usernameput_cv",
+			"value": ""
+		},
+		{
+			"key": "emailpost_cv",
+			"value": ""
+		},
+		{
+			"key": "usernamepost_cv",
+			"value": ""
+		}
+	]
+}

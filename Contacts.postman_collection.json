@@ -1,0 +1,1015 @@
+{
+	"info": {
+		"_postman_id": "0e976f84-42fb-4203-b0cd-f832ad3b6998",
+		"name": "Contacts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38115832"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.environment.set(\"email_gv\" , email)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// status code validation\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//success message validation\r",
+									"var responseData = pm.response.text();\r",
+									"pm.test(\"Success message validation\", function() {\r",
+									"    pm.expect(responseData).to.eql(\"User registered successfully.\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{email_gv}}\",\r\n  \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Auth/register",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsondata = pm.response.json();\r",
+									"pm.globals.set(\"token_gv\", jsondata.token);\r",
+									"\r",
+									"// status code validation\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{email_gv}}\",\r\n  \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Auth/login",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 1",
+			"item": [
+				{
+					"name": "all contacts - view all contacts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts?pageNumber=1&pageSize=10",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all contacts - pagination",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomnum = Math.floor((Math.random()*100+1));\r",
+									"pm.collectionVariables.set(\"pagenum_cv\", randomnum)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts?pageNumber={{pagenum_cv}}&pageSize=10",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "{{pagenum_cv}}"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all contacts - search - first name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var firstname= \"Khaled\" + random;\r",
+									"pm.collectionVariables.set(\"firstname_cv\" , \"Khaled\")\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts?pageNumber=2&pageSize=10&search={{firstname_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "2"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "{{firstname_cv}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all contacts - search - last name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var lastname= \"Ahmed\" + random;\r",
+									"pm.collectionVariables.set(\"lastname_cv\" , lastname)\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts?pageNumber=2&pageSize=10&search={{lastname_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "2"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "{{lastname_cv}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all contacts - search - email",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.collectionVariables.set(\"email_cv\" , email)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts?pageNumber=2&pageSize=10&search={{email_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "2"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "{{email_cv}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 3",
+			"item": [
+				{
+					"name": "Create a new contact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var username= \"Ahmed\" + random;\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.collectionVariables.set(\"emailpost_cv\" , email);\r",
+									"pm.collectionVariables.set(\"usernamepost_cv\" , username)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"const responseData = pm.response.json();\r",
+									"pm.test(\"Test data types of the response\", () => {\r",
+									"    pm.expect(responseData) .to.be.an(\"object\");\r",
+									"    pm.expect(responseData.id) .to.be.a(\"string\");\r",
+									"    pm.expect(responseData.firstName) .to.be.a(\"string\");\r",
+									"    pm.expect(responseData.lastName) .to.be.a(\"string\");\r",
+									"    pm.expect(responseData.email) .to.be.a(\"string\");\r",
+									"    pm.expect(responseData.phone) .to.be.a(\"string\");\r",
+									"    pm.expect(responseData.balance) .to.be.a(\"number\");\r",
+									"    pm.expect(responseData.username) .to.be.a(\"string\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Test data values of the response\", () => {\r",
+									"    pm.expect(responseData.id) .to.eql(\"3fa85f64-5717-4562-b3fc-2c912f66afa5\");\r",
+									"    pm.expect(responseData.firstName) .to.eql(\"Khaled\");\r",
+									"    pm.expect(responseData.lastName) .to.eql(\"Hussein\");\r",
+									"    pm.expect(responseData.email) .to.eql(pm.collectionVariables.get(\"emailpost_cv\"));\r",
+									"    pm.expect(responseData.phone) .to.eql(\"22232233\");\r",
+									"})\r",
+									"pm.test(\"Validate balance value\", function () {\r",
+									"     pm.expect(responseData.balance).to.eql(100);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate username\", function () {\r",
+									"     pm.expect(responseData.username).to.eql(pm.collectionVariables.get(\"usernamepost_cv\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set(\"contactid_cv\", responseData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  \r\n{\r\n   \"id\": \"3fa85f64-5717-4562-b3fc-2c912f66afa5\",\r\n  \"firstName\": \"Khaled\",\r\n  \"lastName\": \"Hussein\",\r\n  \"email\": \"{{emailpost_cv}}\",\r\n  \"phone\": \"22232233\",\r\n  \"balance\": 100,\r\n  \"username\": \"{{usernamepost_cv}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 2",
+			"item": [
+				{
+					"name": "Retreive a contact by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Validate contact ID in the body\", function () {\r",
+									"     pm.expect(responseData.id).to.eql(pm.collectionVariables.get(\"contactid_cv\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactid_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactid_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 4",
+			"item": [
+				{
+					"name": "Update an existing cpntact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random=Math.random() .toString(36) .substring(2);\r",
+									"var username= \"Ahmed\" + random;\r",
+									"var email= \"Khaled\" + random + \"@gmail.com\";\r",
+									"pm.collectionVariables.set(\"emailput_cv\" , email);\r",
+									"pm.collectionVariables.set(\"usernameput_cv\" , username)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  \r\n{\r\n   \"id\": \"{{contactid_cv}}\",\r\n  \"firstName\": \"Ahmed\",\r\n  \"lastName\": \"Mohamed\",\r\n  \"email\": \"{{emailput_cv}}\",\r\n  \"phone\": \"2223223555553\",\r\n  \"balance\": 40,\r\n  \"username\": \"{{usernameput_cv}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactid_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactid_cv}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "confirming updates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"pm.test(\"validating that username and email is updated\", function () {\r",
+									"    pm.expect(responseData.email).to.eql(pm.collectionVariables.get(\"emailput_cv\"));\r",
+									"    pm.expect(responseData.username).to.eql(pm.collectionVariables.get(\"usernameput_cv\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactid_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactid_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 5",
+			"item": [
+				{
+					"name": "Delete a contact by  ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactid_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactid_cv}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirming Deletion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"var responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Validate error message\", function () {\r",
+									"     pm.expect(responseData).to.eql(\"Contact with ID 3fa85f64-5717-4562-b3fc-2c912f66afa5 not found.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactid_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactid_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Acceptance Criteria 6",
+			"item": [
+				{
+					"name": "update contact balance by contact ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"//success message validation\r",
+									"var responseData = pm.response.text();\r",
+									"pm.test(\"Success message validation\", function() {\r",
+									"    pm.expect(responseData).to.eql(\"Balance Updated\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/tipup?id={{contactid_cv}}&amount=20",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"tipup"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactid_cv}}"
+								},
+								{
+									"key": "amount",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirming Balance Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://qa-assignment.sortcrm.com/api/Contacts/{{contactid_cv}}",
+							"protocol": "https",
+							"host": [
+								"qa-assignment",
+								"sortcrm",
+								"com"
+							],
+							"path": [
+								"api",
+								"Contacts",
+								"{{contactid_cv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token_gv}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "firstname_cv",
+			"value": ""
+		},
+		{
+			"key": "lastname_cv",
+			"value": ""
+		},
+		{
+			"key": "email_cv",
+			"value": ""
+		},
+		{
+			"key": "pagenum_cv",
+			"value": ""
+		},
+		{
+			"key": "emailpost_cv",
+			"value": ""
+		},
+		{
+			"key": "usernamepost_cv",
+			"value": ""
+		},
+		{
+			"key": "contactid_cv",
+			"value": ""
+		},
+		{
+			"key": "emailput_cv",
+			"value": ""
+		},
+		{
+			"key": "usernameput_cv",
+			"value": ""
+		}
+	]
+}
